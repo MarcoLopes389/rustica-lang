@@ -16,9 +16,7 @@ fn first(tokens: &Vec<Token>) -> Token {
     }
 }
 
-fn rem(tokens: &mut Vec<Token>) -> Token {
-    return tokens.remove(0);
-}
+fn rem(tokens: &mut Vec<Token>) -> Token { tokens.remove(0) }
 
 pub fn produce_ast(tokens: &mut Vec<Token>) -> Program {
     let mut program = Program {
@@ -78,7 +76,7 @@ fn parse_primary_expr(tokens: &mut Vec<Token>) -> Stmt {
     match token.kind {
         TokenType::Number => {
             rem(tokens);
-            return Stmt {
+            Stmt {
                 kind: StmtType::NumericValue,
                 left: Box::new(None),
                 right: Box::new(None),

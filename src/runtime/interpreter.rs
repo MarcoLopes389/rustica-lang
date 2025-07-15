@@ -43,28 +43,28 @@ fn eval_math(stmt: Stmt) -> Result {
     let right = evaluate_stmt(stmt.right.unwrap());
 
     let operator = stmt.operator.unwrap();
-
-    if operator == "*" {
-        return Result {
+    
+    match operator.as_str() {
+        "*" => Result {
             kind: ResultType::Number,
             value: (left.value.parse::<f64>().unwrap() * right.value.parse::<f64>().unwrap()).to_string()
-        }
-    } else if operator == "-" {
-        return Result {
+        },
+        "-" => Result {
             kind: ResultType::Number,
             value: (left.value.parse::<f64>().unwrap() - right.value.parse::<f64>().unwrap()).to_string()
-        }
-    } else if operator == "+" {
-        return Result {
+        },
+        "+" => Result {
             kind: ResultType::Number,
             value: (left.value.parse::<f64>().unwrap() + right.value.parse::<f64>().unwrap()).to_string()
-        }
-    } else if operator == "%" {
-        return Result {
+        },
+        "%" => Result {
             kind: ResultType::Number,
             value: (left.value.parse::<f64>().unwrap() % right.value.parse::<f64>().unwrap()).to_string()
-        }
-    } else {
-        panic!("Operator not available for interpretation")
+        },
+        "/" => Result {
+            kind: ResultType::Number,
+            value: (left.value.parse::<f64>().unwrap() / right.value.parse::<f64>().unwrap()).to_string()
+        },
+        _ => panic!("Operator not available for interpretation")
     }
 }
