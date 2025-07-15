@@ -43,7 +43,7 @@ fn eval_math(stmt: Stmt) -> Result {
     let right = evaluate_stmt(stmt.right.unwrap());
 
     let operator = stmt.operator.unwrap();
-    
+
     match operator.as_str() {
         "*" => Result {
             kind: ResultType::Number,
