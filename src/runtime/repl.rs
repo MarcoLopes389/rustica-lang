@@ -1,5 +1,5 @@
-use crate::{frontend::{lexer::Lexer, parser::Parser}, runtime::interpreter::Interpreter};
 use std::{io::{stdin, stdout, Write}, process::exit};
+use crate::runtime::interpreter::{interpret};
 
 pub struct Repl {}
 
@@ -24,7 +24,7 @@ impl Repl {
     
             history.push(source.clone());
 
-            let result = Interpreter::new(&source).evaluate();
+            let result = interpret(source.as_str());
             println!("{}", result.value)
         }
     }

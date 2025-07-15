@@ -1,6 +1,5 @@
 use std::fs;
-
-use crate::frontend::parser::Parser;
+use crate::runtime::interpreter::interpret;
 
 pub struct Runner {
     
@@ -11,9 +10,8 @@ impl Runner {
         let content = fs::read_to_string(file);
         match content {
             Ok(source) => {
-                let mut parser = Parser::new(&source);
-                let ast = parser.produce_ast();
-                println!("{:?}", ast)
+                let result = interpret(source.as_str());
+                println!("{:?}", result)
             },
             Err(err) => println!("An error ocurred on read file {}", err)
         }

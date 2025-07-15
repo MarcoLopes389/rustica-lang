@@ -1,4 +1,7 @@
-use crate::frontend::{ast::{Program, Stmt, StmtType}, parser::Parser};
+use crate::frontend::{ast::{Stmt, StmtType}};
+use crate::frontend::ast::Program;
+use crate::frontend::lexer::tokenize;
+use crate::frontend::parser::produce_ast;
 
 #[derive(Debug)]
 pub enum ResultType {
@@ -12,64 +15,56 @@ pub struct Result {
     kind: ResultType
 }
 
-pub struct Interpreter {
-    ast: Program
+pub fn interpret(source_code: &str) -> Result {
+    let mut tokens = tokenize(source_code);
+    let ast = produce_ast(&mut tokens);
+    evaluate(ast)
 }
 
-impl Interpreter {
-    pub fn new(source: &str) -> Interpreter {
-        let mut parser = Parser::new(source);
-        let ast = parser.produce_ast();
-        Interpreter {
-            ast
-        }
+fn evaluate(ast: Program) -> Result {
+    let mut last_result: Result = Result { value: "".to_string(), kind: ResultType::Null };
+    for stmt in ast.body {
+        last_result = evaluate_stmt(stmt)
     }
 
-    pub fn evaluate(&mut self) -> Result {
-        let mut last_result: Result = Result { value: "".to_string(), kind: ResultType::Null };
-        for stmt in &self.ast.body {
-            last_result = self.evaluate_stmt(Clone::clone(stmt))
-        }
+    last_result
+}
 
-        return last_result
+fn evaluate_stmt(stmt: Stmt) -> Result {
+    match stmt.kind {
+        StmtType::Program => todo!(),
+        StmtType::BinaryOp => eval_math(stmt),
+        StmtType::NumericValue => Result { value: stmt.value.unwrap(), kind: ResultType::Number },
     }
+}
 
-    pub fn evaluate_stmt(&self, stmt: Stmt) -> Result {
-        match stmt.kind {
-            StmtType::Program => todo!(),
-            StmtType::BinaryOp => self.eval_math(stmt),
-            StmtType::NumericValue => Result { value: stmt.value.unwrap(), kind: ResultType::Number },
+fn eval_math(stmt: Stmt) -> Result {
+    let left = evaluate_stmt(stmt.left.unwrap());
+    let right = evaluate_stmt(stmt.right.unwrap());
+
+    let operator = stmt.operator.unwrap();
+
+    if operator == "*" {
+        return Result {
+            kind: ResultType::Number,
+            value: (left.value.parse::<f64>().unwrap() * right.value.parse::<f64>().unwrap()).to_string()
         }
-    }
-
-    pub fn eval_math(&self, stmt: Stmt) -> Result {
-        let left = self.evaluate_stmt(stmt.left.unwrap());
-        let right = self.evaluate_stmt(stmt.right.unwrap());
-
-        let operator = stmt.operator.unwrap();
-
-        if operator == "*" {
-            return Result {
-                kind: ResultType::Number,
-                value: (left.value.parse::<f64>().unwrap() * right.value.parse::<f64>().unwrap()).to_string()
-            }
-        } else if operator == "-" {
-            return Result {
-                kind: ResultType::Number,
-                value: (left.value.parse::<f64>().unwrap() - right.value.parse::<f64>().unwrap()).to_string()
-            }
-        } else if operator == "+" {
-            return Result {
-                kind: ResultType::Number,
-                value: (left.value.parse::<f64>().unwrap() - right.value.parse::<f64>().unwrap()).to_string()
-            }
-        } else if operator == "%" {
-            return Result {
-                kind: ResultType::Number,
-                value: (left.value.parse::<f64>().unwrap() - right.value.parse::<f64>().unwrap()).to_string()
-            }
-        } else {
-            panic!("Operator not available for interpretation")
+    } else if operator == "-" {
+        return Result {
+            kind: ResultType::Number,
+            value: (left.value.parse::<f64>().unwrap() - right.value.parse::<f64>().unwrap()).to_string()
         }
+    } else if operator == "+" {
+        return Result {
+            kind: ResultType::Number,
+            value: (left.value.parse::<f64>().unwrap() + right.value.parse::<f64>().unwrap()).to_string()
+        }
+    } else if operator == "%" {
+        return Result {
+            kind: ResultType::Number,
+            value: (left.value.parse::<f64>().unwrap() % right.value.parse::<f64>().unwrap()).to_string()
+        }
+    } else {
+        panic!("Operator not available for interpretation")
     }
 }
