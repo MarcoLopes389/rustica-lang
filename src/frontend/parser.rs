@@ -93,7 +93,7 @@ fn parse_if_stmt(tokens: &mut Vec<Token>) -> Result<Stmt, ParserError> {
     expect(tokens, TokenType::If)?;
     expect(tokens, TokenType::OpenParen)?;
 
-    let condition = parse_addition_expr(tokens)?;
+    let condition = parse_comparison_expr(tokens)?;
     expect(tokens, TokenType::CloseParen)?;
 
     let consequent = parse_block_stmt(tokens)?;

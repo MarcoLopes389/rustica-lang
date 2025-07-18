@@ -1,4 +1,4 @@
-use crate::frontend::{ast::{Program, Stmt, StmtType}, lexer::tokenize, parser::{produce_ast, ParserError}};
+use crate::frontend::{ast::{Program, Stmt, StmtType}, lexer::tokenize, parser::{produce_ast}};
 use crate::runtime::error::RuntimeError;
 use crate::runtime::value::Value;
 
