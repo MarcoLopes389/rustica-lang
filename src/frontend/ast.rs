@@ -1,3 +1,4 @@
+#[allow(dead_code)]
 #[derive(Debug, Clone, PartialEq)]
 pub enum StmtType {
     Program,
@@ -6,6 +7,15 @@ pub enum StmtType {
     Identifier,
     BlockStmt,
     IfStmt,
+    WhileStmt,
+    UntilStmt,
+    UnlessStmt,
+    Assignment,
+    ReturnStmt,
+    FunctionDeclaration,
+    CallExpression,
+    VariableDeclaration,
+    FunctionExpression,
 }
 
 #[allow(dead_code)]
@@ -53,7 +63,14 @@ pub enum TokenType {
     Unless,
     While,
     Work,
-    Interop
+    Interop,
+    Return,
+    Async,
+    Function,
+    Break,
+    Def,
+    Import,
+    Continue
 }
 
 #[derive(Debug, Clone, PartialEq)]

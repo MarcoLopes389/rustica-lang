@@ -105,11 +105,19 @@ fn next_token(src: &mut Peekable<Chars>) -> Option<Token> {
             match identifier_str.as_str() {
                 "null" => Some(gen_token(TokenType::Null, identifier_str)),
                 "if" => Some(gen_token(TokenType::If, identifier_str)),
+                "else" => Some(gen_token(TokenType::Else, identifier_str)),
                 "until" => Some(gen_token(TokenType::Until, identifier_str)),
                 "unless" => Some(gen_token(TokenType::Unless, identifier_str)),
                 "while" => Some(gen_token(TokenType::While, identifier_str)),
                 "work" => Some(gen_token(TokenType::Work, identifier_str)),
                 "interop" => Some(gen_token(TokenType::Interop, identifier_str)),
+                "return" => Some(gen_token(TokenType::Return, identifier_str)),
+                "continue" => Some(gen_token(TokenType::Continue, identifier_str)),
+                "break" => Some(gen_token(TokenType::Break, identifier_str)),
+                "def" => Some(gen_token(TokenType::Def, identifier_str)),
+                "fn" => Some(gen_token(TokenType::Function, identifier_str)),
+                "async" => Some(gen_token(TokenType::Async, identifier_str)),
+                "import" => Some(gen_token(TokenType::Import, identifier_str)),
                 _ => Some(gen_token(TokenType::Identifier, identifier_str)),
             }
         }

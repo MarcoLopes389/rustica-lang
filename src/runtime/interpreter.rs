@@ -42,12 +42,14 @@ fn evaluate_stmt(stmt: Stmt) -> Result<Value, RuntimeError> {
             Err(RuntimeError::UndefinedVariable { name: stmt.value.unwrap_or_default() })
         },
         StmtType::IfStmt => eval_if_stmt(stmt),
+        StmtType::WhileStmt => eval_while_stmt(stmt),
         StmtType::BlockStmt => {
             let body = stmt.body.ok_or_else(|| RuntimeError::TypeError {
                 message: "BlockStmt is missing its body.".to_string()
             })?;
             evaluate_block(body)
         },
+        _ => unimplemented!(),
     }
 }
 
@@ -143,5 +145,34 @@ fn eval_if_stmt(stmt: Stmt) -> Result<Value, RuntimeError> {
         evaluate_stmt(*alternate_box)
     } else {
         Ok(Value::Null)
+    }
+}
+
+fn eval_while_stmt(stmt: Stmt) -> Result<Value, RuntimeError> {
+    let condition_ast_box = stmt.left.ok_or_else(|| RuntimeError::TypeError {
+        message: "While statement missing condition.".to_string()
+    })?;
+
+    let consequent_ast_box = stmt.consequent.ok_or_else(|| RuntimeError::TypeError {
+        message: "While statement missing consequent block.".to_string()
+    })?;
+
+    loop {
+        let condition_val = evaluate_stmt(condition_ast_box.as_ref().clone())?;
+
+        let is_truthy = match condition_val {
+            Value::Boolean(b) => b,
+            Value::Number(n) => n != 0.0,
+            Value::Null => false,
+            _ => return Err(RuntimeError::TypeError {
+                message: format!("While condition must evaluate to a boolean or number, got {}.", condition_val)
+            }),
+        };
+
+        if !is_truthy {
+            break Ok(Value::Null);
+        }
+
+        evaluate_stmt(consequent_ast_box.as_ref().clone())?;
     }
 }

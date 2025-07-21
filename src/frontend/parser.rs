@@ -127,11 +127,32 @@ fn parse_if_stmt(tokens: &mut Vec<Token>) -> Result<Stmt, ParserError> {
     })
 }
 
+fn parse_while_stmt(tokens: &mut Vec<Token>) -> Result<Stmt, ParserError> {
+    expect(tokens, TokenType::While)?;
+    expect(tokens, TokenType::OpenParen)?;
+
+    let condition = parse_comparison_expr(tokens)?;
+    expect(tokens, TokenType::CloseParen)?;
+
+    let consequent = parse_block_stmt(tokens)?;
+
+    Ok(Stmt {
+        kind: StmtType::WhileStmt,
+        left: Some(Box::new(condition)),
+        consequent: Some(Box::new(consequent)),
+        right: None,
+        body: None,
+        operator: None,
+        value: None,
+    })
+}
+
 fn parse_stmt(tokens: &mut Vec<Token>) -> Result<Stmt, ParserError> {
     let current_token_kind = first(tokens)?.kind;
 
     match current_token_kind {
         TokenType::If => parse_if_stmt(tokens),
+        TokenType::While => parse_while_stmt(tokens),
         _ => parse_comparison_expr(tokens),
     }
 }
