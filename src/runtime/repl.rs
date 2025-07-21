@@ -24,7 +24,6 @@ impl Repl {
     
             history.push(source.clone());
 
-            let result = interpret(source.as_str());
             match interpret(source.as_str()) { 
                 Ok(result) => println!("{}", result),
                 Err(error) => eprintln!("{}", error)

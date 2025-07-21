@@ -1,5 +1,6 @@
 use std::fmt;
 
+#[allow(dead_code)]
 #[derive(Debug, PartialEq, Clone)]
 pub enum Value {
     Number(f64),

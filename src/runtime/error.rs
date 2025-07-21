@@ -2,6 +2,7 @@ use std::fmt;
 use crate::frontend::parser::ParserError;
 use crate::runtime::value::Value;
 
+#[allow(dead_code)]
 #[derive(Debug)]
 pub enum RuntimeError {
     ParserError(ParserError),

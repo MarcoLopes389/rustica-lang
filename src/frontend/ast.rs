@@ -8,6 +8,7 @@ pub enum StmtType {
     IfStmt,
 }
 
+#[allow(dead_code)]
 #[derive(Debug)]
 pub struct Program {
     pub kind: StmtType,

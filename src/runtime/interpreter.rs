@@ -48,7 +48,6 @@ fn evaluate_stmt(stmt: Stmt) -> Result<Value, RuntimeError> {
             })?;
             evaluate_block(body)
         },
-        _ => Err(RuntimeError::TypeError { message: format!("Unhandled AST node type: {:?}", stmt.kind) }),
     }
 }
 
